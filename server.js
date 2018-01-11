@@ -7,10 +7,6 @@ const exphbs = require('express-handlebars');
 
 const PORT = process.env.PORT || 8080;
 
-const db = require('./app/models/index');
-
-const authRoute = require('./app/routes/auth.js')(app); 
-
 //for body-parser always
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -27,11 +23,15 @@ app.engine('hbs', exphbs({
 }));
 app.set('view engine', '.hbs');
 
-
-
 app.get('/', (req, res) => {
     res.send('Welcome to sequelize and passport');
 });
+
+const db = require('./app/models/index');
+
+const authRoute = require('./app/routes/auth.js')(app); 
+
+require('./app/config/passport/passport.js')(passport, models.user);
 
 db.sequelize.sync().then(function() {
     app.listen(PORT, function() {
